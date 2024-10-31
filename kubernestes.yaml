@@ -1,0 +1,328 @@
+apiVersion: v1  
+kind: Namespace  
+metadata:  
+  name: microservices  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: service-config  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: service-config  
+  template:  
+    metadata:  
+      labels:  
+        app: service-config  
+    spec:  
+      containers:  
+        - name: service-config  
+          image: paulzk/seminar-service-config:latest  
+          ports:  
+            - containerPort: 8080  
+          env:  
+            - name: SPRING_APPLICATION_NAME  
+              value: "service-config"  
+            - name: SPRING_CLOUD_CONFIG_SERVER_GIT_URI  
+              value: "https://github.com/Paulzidane/cloud-conf"  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: service-config  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - port: 8080  
+      targetPort: 8080  
+  selector:  
+    app: service-config  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: service-register  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: service-register  
+  template:  
+    metadata:  
+      labels:  
+        app: service-register  
+    spec:  
+      containers:  
+        - name: service-register  
+          image: paulzk/seminar-service-register:latest  
+          ports:  
+            - containerPort: 8761  
+          env:  
+            - name: SPRING_APPLICATION_NAME  
+              value: "service-register"  
+            - name: SPRING_CLOUD_CONFIG_URI  
+              value: "http://service-config:8080"  
+            - name: SPRING_CONFIG_IMPORT  
+              value: "configserver:http://service-config:8080"  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: service-register  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - port: 8761  
+      targetPort: 8761  
+  selector:  
+    app: service-register  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: service-company  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: service-company  
+  template:  
+    metadata:  
+      labels:  
+        app: service-company  
+    spec:  
+      containers:  
+        - name: service-company  
+          image: paulzk/seminar-service-company:latest  
+          ports:  
+            - containerPort: 8083  
+          env:  
+            - name: SPRING_APPLICATION_NAME  
+              value: "service-company"  
+            - name: SPRING_CLOUD_CONFIG_URI  
+              value: "http://service-config:8080"  
+            - name: SPRING_CONFIG_IMPORT  
+              value: "configserver:http://service-config:8080"  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: service-company  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - port: 8086  
+      targetPort: 8083  
+  selector:  
+    app: service-company  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: service-user  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: service-user  
+  template:  
+    metadata:  
+      labels:  
+        app: service-user  
+    spec:  
+      containers:  
+        - name: service-user  
+          image: paulzk/seminar-service-user:latest  
+          ports:  
+            - containerPort: 8084  
+          env:  
+            - name: SPRING_APPLICATION_NAME  
+              value: "service-User"  
+            - name: SPRING_CLOUD_CONFIG_URI  
+              value: "http://service-config:8080"  
+            - name: SPRING_CONFIG_IMPORT  
+              value: "configserver:http://service-config:8080"  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: service-user  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - port: 8181  
+      targetPort: 8084  
+  selector:  
+    app: service-user  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: service-user1  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: service-user1  
+  template:  
+    metadata:  
+      labels:  
+        app: service-user1  
+    spec:  
+      containers:  
+        - name: service-user1  
+          image: paulzk/seminar-service-user1:latest  
+          ports:  
+            - containerPort: 8084  
+          env:  
+            - name: SPRING_APPLICATION_NAME  
+              value: "service-User"  
+            - name: SPRING_CLOUD_CONFIG_URI  
+              value: "http://service-config:8080"  
+            - name: SPRING_CONFIG_IMPORT  
+              value: "configserver:http://service-config:8080"  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: service-user1  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - port: 8182  
+      targetPort: 8084  
+  selector:  
+    app: service-user1  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: service-user2  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: service-user2  
+  template:  
+    metadata:  
+      labels:  
+        app: service-user2  
+    spec:  
+      containers:  
+        - name: service-user2  
+          image: paulzk/seminar-service-user2:latest  
+          ports:  
+            - containerPort: 8084  
+          env:  
+            - name: SPRING_APPLICATION_NAME  
+              value: "service-User"  
+            - name: SPRING_CLOUD_CONFIG_URI  
+              value: "http://service-config:8080"  
+            - name: SPRING_CONFIG_IMPORT  
+              value: "configserver:http://service-config:8080"  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: service-user2  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - port: 8183  
+      targetPort: 8084  
+  selector:  
+    app: service-user2  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: service-proxy  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: service-proxy  
+  template:  
+    metadata:  
+      labels:  
+        app: service-proxy  
+    spec:  
+      containers:  
+        - name: service-proxy  
+          image: paulzk/seminar-service-proxy:latest  
+          ports:  
+            - containerPort: 8079  
+          env:  
+            - name: SPRING_APPLICATION_NAME  
+              value: "service-proxy"  
+            - name: SPRING_CLOUD_CONFIG_URI  
+              value: "http://service-config:8080"  
+            - name: SPRING_CONFIG_IMPORT  
+              value: "configserver:http://service-config:8080"  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: service-proxy  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - port: 8060  
+      targetPort: 8079  
+  selector:  
+    app: service-proxy  
+---  
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  name: rabbitmq  
+  namespace: microservices  
+spec:  
+  replicas: 1  
+  selector:  
+    matchLabels:  
+      app: rabbitmq  
+  template:  
+    metadata:  
+      labels:  
+        app: rabbitmq  
+    spec:  
+      containers:  
+        - name: rabbitmq  
+          image: rabbitmq:management  
+          ports:  
+            - containerPort: 5672  
+            - containerPort: 15672  
+---  
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: rabbitmq  
+  namespace: microservices  
+spec:  
+  type: LoadBalancer  
+  ports:  
+    - name: rabbitmq   
+      port: 5672  
+      targetPort: 5672  
+    - name: rabbitmq-management  
+      port: 15672  
+      targetPort: 15672  
+  selector:  
+    app: rabbitmq  
