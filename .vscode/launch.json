@@ -1,0 +1,53 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ServiceProxyApplication",
+            "request": "launch",
+            "mainClass": "com.m1_fonda.service_proxy.ServiceProxyApplication"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceConfigApplication<service-config>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1_fonda.service_config.ServiceConfigApplication",
+            "projectName": "service-config",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=41803 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-config"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceUsersApplication<service-users>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1_fonda.service_users.ServiceUsersApplication",
+            "projectName": "service-users",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=43767 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-users"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceRegisterApplication<service-register>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1_fonda.service_register.ServiceRegisterApplication",
+            "projectName": "service-register",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=34285 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=service-register"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceProxyApplication<service-proxy>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.m1_fonda.service_proxy.ServiceProxyApplication",
+            "projectName": "service-proxy",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

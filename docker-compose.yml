@@ -1,0 +1,84 @@
+version: '3.3'
+
+services:
+  service-config:
+    build: ./service-config
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=service-config
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/bosley001/cloud-conf
+    networks:
+      - microservices-network
+
+  service-register:
+    build: ./service-register
+    depends_on:
+      - service-config
+    ports:
+      - "8081:8761" #port depuis l'exterieur:port du service propement dit a l'interieur du conteneur
+    environment:
+      - SPRING_APPLICATION_NAME=service-register
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8080
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8080
+    networks:
+      - microservices-network
+
+
+  service-users:
+    build: ./service-users
+    depends_on:
+      - service-config
+      - service-register
+    ports:
+      - "8084" # le port externe sera allouer dinamiquement par docker compose
+    environment:
+      - SPRING_APPLICATION_NAME=service-users
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8080
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8080
+    networks:
+      - microservices-network
+
+
+  service-users-cp:
+    build: ./instance2/service-users-cp
+    depends_on:
+      - service-config
+      - service-register
+    ports:
+      - "8083" # le port externe sera allouer dinamiquement par docker compose
+    environment:
+      - SPRING_APPLICATION_NAME=service-users
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8080
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8080
+    networks:
+      - microservices-network
+
+  
+  service-proxy:
+    build: ./service-proxy
+    depends_on:
+      - service-config
+      - service-register
+    ports:
+      - "8082:8079" 
+    environment:
+      - SPRING_APPLICATION_NAME=service-proxy
+      - SPRING_CLOUD_CONFIG_URI=http://service-config:8080
+      - SPRING_CONFIG_IMPORT=configserver:http://service-config:8080
+    networks:
+      - microservices-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672" #port pour envoyer les requetes a rabbit mq
+      - "15672:15672" #port pour acceder a l'interface user
+
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
+     
